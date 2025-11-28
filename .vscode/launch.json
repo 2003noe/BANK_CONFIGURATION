@@ -1,0 +1,63 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "BankingRegistryServiceApplication",
+            "request": "launch",
+            "mainClass": "bankingservice.example.banking_registry_service.BankingRegistryServiceApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BankConfigServiceApplication<bank-config-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.bankingproject.bank_config_service.BankConfigServiceApplication",
+            "projectName": "bank-config-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=46445 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=bank-config-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BankingRegistryServiceApplication<banking-registry-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "bankingservice.example.banking_registry_service.BankingRegistryServiceApplication",
+            "projectName": "banking-registry-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=38549 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=banking-registry-service"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BankUserServiceApplication<bank-user-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.bankingsystem.bank_user_service.BankUserServiceApplication",
+            "projectName": "bank-user-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BankProxyServiceApplication<bank-proxy-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.bankingsystem.bank_proxy_service.BankProxyServiceApplication",
+            "projectName": "bank-proxy-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BankAccountServiceApplication<bank-account-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "bankingsystem.bank_account_service.BankAccountServiceApplication",
+            "projectName": "bank-account-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

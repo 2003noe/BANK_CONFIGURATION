@@ -1,0 +1,96 @@
+version: '3.3'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bank_user_db
+      
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - bank-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  bank-config-service:
+    build: ./bank-config-service
+    container_name: bank-config-service
+    ports:
+      - "8000:8000"
+    environment:
+      - SPRING_APPLICATION_NAME=bank-config-service
+      - SERVER_PORT=8000
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/2003noe/BANK_CONFIGURATION.git
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_CLONE_ON_START=true
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL=main
+    networks:
+      - bank-network
+    
+
+  banking-registry-service:
+    build: ./banking-registry-service
+    depends_on:
+      - bank-config-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_APPLICATION_NAME=banking-registry-service
+      - SERVER_PORT=8761
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+      
+    networks:
+      - bank-network
+    
+
+  bank-user-service:
+    build: ./bank-user-service
+    container_name: bank-user-service
+    depends_on:
+      - bank-config-service
+      - mysql-db
+      - banking-registry-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_APPLICATION_NAME=bank-user-service
+      - SERVER_PORT=8083
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/bank_user_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+    networks:
+      - bank-network
+    
+
+  bank-proxy-service:
+    build: ./bank-proxy-service
+    container_name: bank-proxy-service
+    depends_on:
+      - bank-config-service
+      - banking-registry-service
+    ports:
+      - "8079:8077"
+    environment:
+      - SPRING_APPLICATION_NAME=bank-proxy-service
+      - SERVER_PORT=8079
+      - SPRING_CLOUD_CONFIG_ENABLED=false
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      
+    networks:
+      - bank-network
+    
+
+networks:
+  bank-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
